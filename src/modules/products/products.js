@@ -42,5 +42,25 @@ module.exports = {
                 message: "Internal server error"
             })
         }
+    },
+    UPDATE_PRODUCT: async(req, res) => {
+        try {
+            const { productName, productPrice } = req.body
+
+            const newProduct = await model.newProduct(productName, productPrice)
+
+            if(newProduct) {
+                res.json({
+                    status: 200,
+                    message: "Product has been created"
+                })
+            }
+        } catch(err) {
+            console.log(err)
+            res.json({
+                status: 500,
+                message: "Internal server error"
+            })
+        }
     }
 }

@@ -1,4 +1,5 @@
 const model = require('./model')
+const { userRoles } = require('../../config')
 
 module.exports = {
     LOGIN: async(req, res) => {
@@ -18,6 +19,29 @@ module.exports = {
                 status: 200,
                 user
             })
+        } catch(err) {
+            console.log(err)
+            res.json({
+                status: 500,
+                message: "Internal server error"
+            })
+        }
+    },
+    ALL_USERS: async(_, res) => {
+        try {
+            const users = await model.allUsers()
+
+            if(users.length) {
+                res.json({
+                    status: 200,
+                    data: users.filter(e => e.user_status = userRoles(e.user_status))
+                }) 
+            } else {
+                res.json({
+                    message: "Users does not exist"
+                })
+            }
+
         } catch(err) {
             console.log(err)
             res.json({
@@ -47,6 +71,46 @@ module.exports = {
                 res.json({
                     status: 200,
                     message: "User created"
+                })
+            }
+        } catch(err) {
+            console.log(err)
+            res.json({
+                status: 500,
+                message: "Internal server error"
+            })
+        }
+    },
+    UPDATE_USER: async(req, res) => {
+        try {
+            const { username, password, user_status, user_id } = req.body
+
+            const updatedUser = await model.updateUser(username, password, user_status, user_id)
+
+            if(updatedUser) {
+                res.json({
+                    status: 200,
+                    message: "User updated"
+                })
+            }
+        } catch(err) {
+            console.log(err)
+            res.json({
+                status: 500,
+                message: "Internal server error"
+            })
+        }
+    },
+    DELETE_USER: async(req, res) => {
+        try {
+            const { user_id } = req.body
+
+            const deletedUser = await model.deleteUser(user_id)
+
+            if(deletedUser) {
+                res.json({
+                    status: 200,
+                    message: "User deleted"
                 })
             }
         } catch(err) {
