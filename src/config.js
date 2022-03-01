@@ -8,7 +8,10 @@ const userRoles = role => {
 
 const PORT = process.env.PORT || 9000
 
+const SECRET_KEY = 'SUT_ICHAMAN'
+
 module.exports = {
     userRoles,
-    PORT
+    PORT,
+    SECRET_KEY
 }

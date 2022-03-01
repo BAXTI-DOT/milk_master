@@ -70,6 +70,26 @@ const DELETE_USER = `
     RETURNING *
 `
 
+const STORE_USER = `
+    SELECT
+        us.user_store,
+        u.user_name,
+        u.user_status,
+        s.store_id
+    FROM
+        user_stores us
+    INNER JOIN
+        users u 
+    ON
+        us.user_store = u.user_id
+    INNER JOIN
+        stores s 
+    ON
+        us.store_id = s.store_id
+    WHERE
+        u.user_name = $1
+`
+
 const findUserById = (userID) => fetch(FIND_BY_ID, userID)
 const findUser = (userName, password) => fetch(FIND_USER, userName, password)
 const allUsers = () => fetchAll(ALL_USERS)
@@ -86,6 +106,7 @@ const updateUser = async(userName, userPassword, userStatus, userID) => {
 }
 const deleteUser = (user_id) => fetch(DELETE_USER, user_id)
 const newStoreUser = (userID, storeID) => fetch(NEW_STORE_USER, userID, storeID)
+const storeUser = (userName) => fetch(STORE_USER, userName)
 
 module.exports = {
     findUser,
@@ -93,5 +114,7 @@ module.exports = {
     newStoreUser,
     updateUser,
     deleteUser,
-    allUsers
+    allUsers,
+    findUser,
+    storeUser
 }

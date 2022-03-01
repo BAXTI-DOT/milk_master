@@ -1,11 +1,15 @@
 const model = require('./model')
+const powerModel = require('../power/model')
+const moment = require('moment')
+moment.locale("uz-latn")
+const { verifyUser } = require('../../lib/jwt') 
 
 module.exports = {
     NEW_STORE: async(req, res) => {
         try {
-            const { storeName, storePassword } = req.body
+            const { storeName } = req.body
 
-            const newStore = await model.newStore(storeName, storePassword)
+            const newStore = await model.newStore(storeName)
 
             if(newStore) {
                 res.json({
@@ -37,9 +41,9 @@ module.exports = {
     },
     UPDATE_STORE: async(req, res) => {
         try {
-            const { storeName, storePassword, storeId } = req.body
+            const { storeName, storeId } = req.body
 
-            const updatedStore = await model.updateStore(storeName, storePassword, storeId)
+            const updatedStore = await model.updateStore(storeName, storeId)
 
             if(updatedStore) {
                 res.json({
@@ -70,6 +74,159 @@ module.exports = {
         } catch(err) {
             console.log(err)
             res.json({
+                status: 500,
+                message: "Internal server error"
+            })
+        }
+    },
+    SEND_STORE_MONEY: async(req, res) => {
+        try {
+            const { auth_token } = req.headers
+            const { storeId } = verifyUser(auth_token)
+            const { cash, incass, humo, uzcard } = req.body
+
+            const storeMoney = await model.newStoreMoney(cash, incass, humo, uzcard, storeId)
+
+            if(storeMoney) {
+                res.json({
+                    status: 200,
+                    message: "Send money into casher"
+                })
+            } else {
+                res.json({
+                    status: 400,
+                    message: "Bad request"
+                })
+            }
+        } catch(err) {
+            console.log(err)
+            res.json({
+                status: 500,
+                message: "Internal server error"
+            })
+        }
+    },
+    GET_CASHER_MONEY: async(req, res) => {
+        try {
+            const { storeId } = req.query
+            const storeMoney = await model.getCasherMoney(storeId)
+
+            if(storeMoney) {
+                res.status(200).json({
+                    status: 200,
+                    data: storeMoney.filter(e => e.money_sent_at = moment(e.money_sent_at).calendar())
+                })
+            } else {
+                res.status(400).json({
+                    status: 400,
+                    message: "Data not found" 
+                })
+            }
+        } catch(err) {
+            console.log(err)
+            res.json({
+                status: 500,
+                message: "Internal server error"
+            })
+        }
+    },
+    SEND_TO_ACCOUNTANT: async(req, res) => {
+        try {
+            const { storeMoneyId, storeMoneyCashNew } = req.body
+            const sentToAccountant = await model.sendToAccountantFromCasher(storeMoneyId, storeMoneyCashNew ? storeMoneyCashNew: null)
+
+            if(sentToAccountant) {
+                res.status(200).json({
+                    status: 200,
+                    message: "Sent to accountant"
+                })
+            } else {
+                res.status(400).json({
+                    status: 400,
+                    message: "Could not sent to accountant"
+                })
+            }
+        } catch(err) {
+            console.log(err)
+            res.json({
+                status: 500,
+                message: "Internal server error"
+            })
+        }
+    },
+    GET_ACCOUNTANT_MONEY: async(req, res) => {
+        try {
+            const { storeId } = req.query
+            const storeMoney = await model.getAccountantMoney(storeId)
+
+            if(storeMoney) {
+                res.status(200).json({
+                    status: 200,
+                    data: storeMoney.filter(e => e.money_updated_at = moment(e.money_updated_at).calendar())
+                })
+            } else {
+                res.status(400).json({
+                    status: 400,
+                    message: "Data not found" 
+                })
+            }
+        } catch(err) {
+            console.log(err)
+            res.json({
+                status: 500,
+                message: "Internal server error"
+            })
+        }
+    },
+    MONTHLY_REPORT: async(req, res) => {
+        try {
+            const { auth_token } = req.headers
+            const { productsLeft, watt } = req.body
+            const { storeId } = verifyUser(auth_token)
+            if(productsLeft.length && storeId && watt) {
+                let result = []
+                for(let i of productsLeft) {
+                    const newReportMonth = await model.monthlyReport(i.product_id, i.product_count, storeId)
+                    result.push(newReportMonth)
+                }
+
+                const consumedWatt = await powerModel.powerConsume(storeId, watt)
+                
+                if(result.length && consumedWatt) {
+                    return res.status(200).json({
+                        status: 200,
+                        message: "Remainings inserted"
+                    })
+                }
+            }
+        } catch(err) {
+            console.log(err)
+            res.json({
+                status: 500,
+                message: "Internal server error"
+            })
+        }
+    },
+    MONTHLY_REPORT_ACCOUNTANT: async(req, res) => {
+        try {
+            const { storeId } = req.query
+
+            const reportMonth = await model.monthlyReportAccountant(storeId)
+
+            if(!reportMonth.length) {
+                return res.status(400).json({
+                    status: 400,
+                    message: "Report not found"
+                })
+            }
+
+            res.status(200).json({
+                status: 200,
+                data: reportMonth.filter(e => e.power_reported_at = moment(e.power_reported_at).format('MMMM'))
+            })
+        } catch(err) {
+            console.log(err)
+            res.status(500).json({
                 status: 500,
                 message: "Internal server error"
             })

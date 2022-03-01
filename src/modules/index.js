@@ -4,6 +4,7 @@ const router = express.Router()
 const Users = require('./users/users')
 const Stores = require('./stores/stores')
 const Products = require('./products/products')
+const Watt = require('./power/power')
 
 router
     .post('/login', Users.LOGIN)
@@ -15,7 +16,16 @@ router
     .post('/newStore', Stores.NEW_STORE)
     .put('/updateStore', Stores.UPDATE_STORE)
     .delete('/deleteStore', Stores.DELETE_STORE)
+    .post('/sendStoreMoney', Stores.SEND_STORE_MONEY)
     .get('/products', Products.ALL_PRODUCTS)
     .post('/newProduct', Products.NEW_PRODUCT)
+    .post('/productStore', Products.PRODUCTS_STORE)
+    .get('/getCasherMoney', Stores.GET_CASHER_MONEY)
+    .post('/sendToAccountant', Stores.SEND_TO_ACCOUNTANT)
+    .get('/getAccountantMoney', Stores.GET_ACCOUNTANT_MONEY)
+    .post('/monthlyReport', Stores.MONTHLY_REPORT)
+    .get('/power', Watt.GET)
+    .put('/updatePrice', Watt.PUT)
+    .get('/accountantMonthly', Stores.MONTHLY_REPORT_ACCOUNTANT)
 
 module.exports = router

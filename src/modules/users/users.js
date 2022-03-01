@@ -1,5 +1,6 @@
 const model = require('./model')
 const { userRoles } = require('../../config')
+const { signUser } = require('../../lib/jwt')
 
 module.exports = {
     LOGIN: async(req, res) => {
@@ -15,9 +16,23 @@ module.exports = {
                 })
             }
 
+            if(user && user.user_status == 2) {
+                const storeUser = await model.storeUser(user.user_name)
+
+                if(storeUser) {
+                    console.log(storeUser)
+                    return res.json({
+                        status: 200,
+                        token: signUser({ storeId: storeUser.store_id }),
+                        storeId: storeUser.store_id
+                    })
+                }
+            }
+
             res.json({
                 status: 200,
-                user
+                token: signUser({ userId: user.user_id, userStatus: user.user_status }),
+                userStatus: user.user_status
             })
         } catch(err) {
             console.log(err)
@@ -52,12 +67,21 @@ module.exports = {
     },
     CREATE_USER: async(req, res) => {
         try {
-            const { username, password, user_status, store_id } = req.body
+            const { username, password, userStatus, storeId } = req.body
 
-            const newUser = await model.newUser(username, password, user_status)
+            const existingUser = await model.findUser(username, password)
 
-            if(newUser && user_status == 2 && store_id) {
-                const newStoreUser = await model.newStoreUser(newUser.user_id, store_id)
+            if(existingUser) {
+                return res.json({
+                    status: 400,
+                    message: "User already exists"
+                })
+            }
+
+            const newUser = await model.newUser(username, password, userStatus)
+
+            if(newUser && userStatus == 2 && storeId) {
+                const newStoreUser = await model.newStoreUser(newUser.user_id, storeId)
 
                 if(newStoreUser) {
                     return res.json({
