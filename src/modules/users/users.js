@@ -10,7 +10,7 @@ module.exports = {
             const user = await model.findUser(username, password)
 
             if(!user) {
-                return res.json({
+                return res.status(401).json({
                     status: 401,
                     message: "Unauthorized"
                 })
@@ -36,7 +36,7 @@ module.exports = {
             })
         } catch(err) {
             console.log(err)
-            res.json({
+            res.status(5000).json({
                 status: 500,
                 message: "Internal server error"
             })

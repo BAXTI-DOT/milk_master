@@ -1,7 +1,7 @@
 const model = require('./model')
 const { verifyUser } = require('../../lib/jwt')
-
-
+const moment = require('moment')
+moment.locale("uz-latn")
 
 module.exports = {
     ALL_PRODUCTS: async(_, res) => {
@@ -70,15 +70,15 @@ module.exports = {
         try {
             const { auth_token } = req.headers
             const { storeId } = verifyUser(auth_token)
-            const { received, notReceived, notDelivered } = req.body
+            const { received, notReceived, returning } = req.body
 
-            if((received.length || notReceived.length || notDelivered.length) && storeId) {
-                const result = received.map(async e => await model.dailyStore(storeId, e.product_id, e.product_count))
+            if((received.length || notReceived.length || returning.length) && storeId) {
+                const result1 = received.map(async e => await model.dailyStore(storeId, e.product_id, e.product_count))
                 const result2 = notReceived.map(async e => await model.dailyStore(storeId, e.product_id, null, e.product_count))
-                const result3 = notDelivered.map(async e => await model.dailyStore(storeId, e.product_id, null, null, e.product_count))
+                const result3 = returning.map(async e => await model.dailyStore(storeId, e.product_id, null, null, e.product_count))
 
-                const final = await Promise.all([ ...result2, ...result, ...result3 ])
-                
+                const final = await Promise.all([ ...result2, ...result1, ...result3 ])
+
                 if(final.length) {
                     return res.json({
                         status: 200,
@@ -91,7 +91,42 @@ module.exports = {
                     message: "Length is not defined"
                 })
             }
+            res.send("OK")
         } catch (err) {
+            console.log(err)
+            res.json({
+                status: 500,
+                message: 'Internal server error',
+            })
+        }
+    },
+    GET_DAILY_SALE_WARE_HOUSE_MAN: async(req, res) => {
+        try {
+            const { storeId } = req.query
+
+            const data = await model.getDailySaleWarehose(storeId)
+
+            const received = data.filter(e => e.product_received).filter(m => m.sent_at = moment(m.sent_at).calendar())
+            const notReceived = data.filter(e => e.product_unreceived).filter(m => m.sent_at = moment(m.sent_at).calendar())
+            const returned = data.filter(e => e.product_returned).filter(m => m.sent_at = moment(m.sent_at).calendar())
+
+            if(received.length || notReceived.length || returned.length) {
+                res.status(200).json({
+                    status: 200,
+                    data: {
+                        received,
+                        notReceived,
+                        returned
+                    }
+                })
+            } else {
+                res.status(400).json({
+                    status: 400,
+                    data: [],
+                    message: "No products yet"
+                })
+            }
+        } catch(err) {
             console.log(err)
             res.json({
                 status: 500,

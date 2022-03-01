@@ -36,7 +36,8 @@ CREATE TABLE store_products(
     product_id int REFERENCES products(product_id) not null,
     product_received bigint DEFAULT null,
     product_unreceived bigint DEFAULT null,
-    product_returned bigint DEFAULT null
+    product_returned bigint DEFAULT null,
+    sent_at timestamptz DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE store_money(

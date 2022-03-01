@@ -27,5 +27,6 @@ router
     .get('/power', Watt.GET)
     .put('/updatePrice', Watt.PUT)
     .get('/accountantMonthly', Stores.MONTHLY_REPORT_ACCOUNTANT)
+    .get('/warehouseDaily', Products.GET_DAILY_SALE_WARE_HOUSE_MAN)
 
 module.exports = router
