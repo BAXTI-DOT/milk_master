@@ -10,8 +10,14 @@ const PORT = process.env.PORT || 9000
 
 const SECRET_KEY = 'SUT_ICHAMAN'
 
+const connection =  {
+    connectionString: 'postgres://postgres:baxtiyor@localhost:5432/milk',
+    connectionLocString: 'postgres://rktokhzz:uDDENO3x0wFJGiAtgfg3-2NHD3tWXWqg@jelani.db.elephantsql.com/rktokhzz'
+}
+
 module.exports = {
     userRoles,
     PORT,
-    SECRET_KEY
+    SECRET_KEY,
+    connection
 }

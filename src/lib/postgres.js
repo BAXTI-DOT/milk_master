@@ -1,7 +1,8 @@
 const { Pool } = require('pg')
+const { connection } = require('../config')
 
 const pool = new Pool({
-    connectionString: 'postgres://postgres:baxtiyor@localhost:5432/milk'
+    connectionString: connection.connectionLocString,
 })
 
 const fetch = async(SQL, ...params) => {
