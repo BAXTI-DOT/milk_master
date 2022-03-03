@@ -21,7 +21,7 @@ module.exports = {
             console.log(err)
             res.json({
                 status: 500,
-                message: "Internal server error"
+                message: err.message
             })
         }
     },
@@ -35,7 +35,7 @@ module.exports = {
             console.log(err)
             res.json({
                 status: 500,
-                message: "Internal server error"
+                message: err.message
             })
         }
     },
@@ -55,7 +55,7 @@ module.exports = {
             console.log(err)
             res.json({
                 status: 500,
-                message: "Internal server error"
+                message: err.message
             })
         }
     },
@@ -75,7 +75,7 @@ module.exports = {
             console.log(err)
             res.json({
                 status: 500,
-                message: "Internal server error"
+                message: err.message
             })
         }
     },
@@ -102,7 +102,7 @@ module.exports = {
             console.log(err)
             res.json({
                 status: 500,
-                message: "Internal server error"
+                message: err.message
             })
         }
     },
@@ -126,7 +126,7 @@ module.exports = {
             console.log(err)
             res.json({
                 status: 500,
-                message: "Internal server error"
+                message: err.message
             })
         }
     },
@@ -150,7 +150,7 @@ module.exports = {
             console.log(err)
             res.json({
                 status: 500,
-                message: "Internal server error"
+                message: err.message
             })
         }
     },
@@ -174,7 +174,7 @@ module.exports = {
             console.log(err)
             res.json({
                 status: 500,
-                message: "Internal server error"
+                message: err.message
             })
         }
     },
@@ -203,7 +203,7 @@ module.exports = {
             console.log(err)
             res.json({
                 status: 500,
-                message: "Internal server error"
+                message: err.message
             })
         }
     },
@@ -228,7 +228,7 @@ module.exports = {
             console.log(err)
             res.status(500).json({
                 status: 500,
-                message: "Internal server error"
+                message: err.message
             })
         }
     }
