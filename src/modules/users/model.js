@@ -56,8 +56,8 @@ const UPDATE_USER = `
 
 const NEW_STORE_USER = `
     INSERT INTO
-        user_stores(user_store, store_id, user_status)
-    VALUES($1, $2, $3)
+        user_stores(user_store, store_id)
+    VALUES($1, $2)
     RETURNING *
 `
 
