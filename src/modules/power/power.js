@@ -14,7 +14,7 @@ module.exports = {
 
             res.status(200).json({
                 status: 200,
-                power: power
+                power
             })
         } catch(err) {
             console.log(err)
