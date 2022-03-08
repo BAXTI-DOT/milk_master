@@ -72,6 +72,8 @@ module.exports = {
             const { storeId } = verifyUser(auth_token)
             const { received, notReceived, returning } = req.body
 
+            console.log(received, notReceived, returning)
+
             if((received.length || notReceived.length || returning.length) && storeId) {
                 const result1 = received.map(async e => await model.dailyStore(storeId, e.product_id, e.product_count))
                 const result2 = notReceived.map(async e => await model.dailyStore(storeId, e.product_id, null, e.product_count))
@@ -91,13 +93,9 @@ module.exports = {
                     message: "Length is not defined"
                 })
             }
-            res.send("OK")
         } catch (err) {
             console.log(err)
-            res.json({
-                status: 500,
-                message: err.messsage,
-            })
+            res.status(500).send(err)
         }
     },
     GET_DAILY_SALE_WARE_HOUSE_MAN: async(req, res) => {

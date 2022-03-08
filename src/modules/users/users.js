@@ -9,6 +9,8 @@ module.exports = {
 
             const user = await model.findUser(username, password)
 
+            console.log(user)
+
             if(!user) {
                 return res.status(401).json({
                     status: 401,

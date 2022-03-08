@@ -60,14 +60,16 @@ const NEW_STORE_MONEY = `
 
 const GET_CASHER_MONEY = `
     SELECT
+        store_name,
         store_money_cash,
         money_sent_at
     FROM
         store_money
+    INNER JOIN
+        stores
+    USING(store_id)
     WHERE
         store_money_status = 1
-    AND 
-        store_id = $1
 `
 
 const GET_ACCOUNTANT_MONEY = `
@@ -171,7 +173,7 @@ const newStoreMoney = (
     uzcard, 
     storeId
 )
-const getCasherMoney = (storeId) => fetchAll(GET_CASHER_MONEY, storeId)
+const getCasherMoney = () => fetchAll(GET_CASHER_MONEY)
 const getCasherMoneyToUpdate = (storeMoneyId) => fetch(GET_OLD_STORE_MONEY, storeMoneyId)
 const sendToAccountantFromCasher = async(storeMoneyId, storeCash) => {
     const oldCash = await getCasherMoneyToUpdate(storeMoneyId)
