@@ -60,6 +60,7 @@ const NEW_STORE_MONEY = `
 
 const GET_CASHER_MONEY = `
     SELECT
+        store_id,
         store_name,
         store_money_cash,
         money_sent_at
