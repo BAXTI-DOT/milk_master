@@ -95,7 +95,7 @@ const GET_ACCOUNTANT_MONEY = `
 const SEND_TO_ACCOUNTANT_FROM_CASHER = `
     UPDATE
         store_money
-    SET 
+    SET
         store_money_status = 2,
         store_money_cash = $2
     WHERE
@@ -112,6 +112,7 @@ const MONTHLY_REPORT = `
 
 const MONTHLY_REPORT_ACCOUNTANT = `
     SELECT
+        smr.store_id,
         CASE WHEN SUM(p.product_price * smr.product_count) IS NULL THEN 0 ELSE SUM(p.product_price * smr.product_count) END AS remain,
         CASE WHEN SUM(sp.product_received * p.product_price) IS NULL THEN 0 ELSE SUM(sp.product_received * p.product_price) END AS received,
         CASE WHEN SUM(sp.product_unreceived * p.product_price) IS NULL THEN 0 ELSE SUM(sp.product_unreceived * p.product_price) END AS unreceived,
@@ -127,16 +128,14 @@ const MONTHLY_REPORT_ACCOUNTANT = `
     LEFT JOIN
         store_products sp
     ON
-        sp.product_id = p.product_id
+        p.product_id = sp.product_id
     LEFT JOIN
         power_consume w
     ON
-        w.store_id = sp.store_id
+        w.store_id = smr.store_id
     GROUP BY 
-        sp.store_id,
-        w.power_reported_at
-    HAVING 
-        sp.store_id = $1
+        smr.store_id,
+        w.power_reported_at;
 `
 
 const GET_OLD_STORE_MONEY = `
@@ -177,7 +176,7 @@ const newStoreMoney = (
 )
 const getCasherMoney = () => fetchAll(GET_CASHER_MONEY)
 const getCasherMoneyToUpdate = (storeMoneyId) => fetch(GET_OLD_STORE_MONEY, storeMoneyId)
-const sendToAccountantFromCasher = async(storeMoneyId, storeCash) => {
+const sendToAccountantFromCasher = async(storeMoneyId, storeCash) => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              qaaaaaaaaa
     const oldCash = await getCasherMoneyToUpdate(storeMoneyId)
 
     return fetch(
