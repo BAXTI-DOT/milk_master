@@ -108,7 +108,7 @@ module.exports = {
     },
     GET_CASHER_MONEY: async(req, res) => {
         try {
-            const storeMoney = await model.getCasherMoney(storeId)
+            const storeMoney = await model.getCasherMoney()
 
             if(storeMoney) {
                 res.status(200).json({
