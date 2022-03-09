@@ -135,7 +135,7 @@ const MONTHLY_REPORT_ACCOUNTANT = `
         w.store_id = smr.store_id
     GROUP BY 
         smr.store_id,
-        w.power_reported_at;
+        w.power_reported_at
 `
 
 const GET_OLD_STORE_MONEY = `
