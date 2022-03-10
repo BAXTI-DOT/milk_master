@@ -96,9 +96,11 @@ module.exports = {
             res.status(500).send(err)
         }
     },
-    GET_DAILY_SALE_WARE_HOUSE_MAN: async(_, res) => {
+    GET_DAILY_SALE_WARE_HOUSE_MAN: async(req, res) => {
         try {
-            const data = await model.getDailySaleWarehose()
+            const { storeId } = req.query
+
+            const data = await model.getDailySaleWarehose(storeId)
 
             const received = data.filter(e => e.product_received).filter(m => m.sent_at = moment(m.sent_at).calendar())
             const notReceived = data.filter(e => e.product_unreceived).filter(m => m.sent_at = moment(m.sent_at).calendar())

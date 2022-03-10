@@ -47,6 +47,8 @@ const GET_DAILY_SALE_WARE_HOUSE = `
         stores s
     ON 
         sp.store_id = s.store_id
+    WHERE
+        s.store_id = $1
 `
 
 const products = () => fetchAll(PRODUCTS)
@@ -66,7 +68,7 @@ const dailyStore = (
         productReturned
     )
 
-const getDailySaleWarehose = () => fetchAll(GET_DAILY_SALE_WARE_HOUSE)
+const getDailySaleWarehose = (storeId) => fetchAll(GET_DAILY_SALE_WARE_HOUSE, storeId)
 
 module.exports = {
     products,

@@ -229,5 +229,15 @@ module.exports = {
                 message: err.message
             })
         }
+    },
+    GET_WARE_HOUSE_STORES: async(_, res) => {
+        try {
+            const data = await model.getWarehouseStores()
+            res.json({
+                data: data.filter(e => e.sent_at = moment(e.sent_at).calendar())
+            })
+        } catch(err) {
+            res.status(500).json("Serverda muammo bor")
+        }
     }
 }

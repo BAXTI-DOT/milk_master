@@ -145,6 +145,30 @@ const GET_OLD_STORE_MONEY = `
         store_money_id = $1
 `
 
+const GET_WARE_HOUSE_STORES = `
+    SELECT
+        DISTINCT sp.sent_at::DATE,
+        sp.store_id,
+        s.store_name
+    FROM
+        stores s
+    INNER JOIN
+        store_products sp
+    USING(store_id)
+    WHERE
+        sp.product_received IS NOT NULL 
+    OR
+        sp.product_unreceived IS NOT NULL 
+    OR
+        sp.product_returned IS NOT NULL
+    GROUP BY
+        s.store_name,
+        sp.sent_at,
+        sp.store_id
+    ORDER BY
+        sp.sent_at::DATE DESC;
+`
+
 const stores = () => fetchAll(STORES)
 const storeById = (storeId) => fetch(STORE_BY_ID, storeId)
 const newStore = (storeName) => fetch(NEW_STORE, storeName)
@@ -186,6 +210,7 @@ const sendToAccountantFromCasher = async(storeMoneyId, storeCash) => {          
 const getAccountantMoney = () => fetchAll(GET_ACCOUNTANT_MONEY)
 const monthlyReport = (productId, productCount, storeId) => fetch(MONTHLY_REPORT, productId, productCount, storeId)
 const monthlyReportAccountant = (storeId) => fetchAll(MONTHLY_REPORT_ACCOUNTANT, storeId)
+const getWarehouseStores = () => fetchAll(GET_WARE_HOUSE_STORES)
 
 module.exports = {
     stores,
@@ -197,5 +222,6 @@ module.exports = {
     getAccountantMoney,
     sendToAccountantFromCasher,
     monthlyReport,
-    monthlyReportAccountant
+    monthlyReportAccountant,
+    getWarehouseStores
 }
