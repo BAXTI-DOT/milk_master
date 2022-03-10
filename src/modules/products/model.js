@@ -29,12 +29,24 @@ const DAILY_STORE = `
 
 const GET_DAILY_SALE_WARE_HOUSE = `
     SELECT
-        *
+        s.store_id,
+        s.store_name,
+        p.product_name,
+        p.product_price,
+        sp.product_received,
+        sp.product_unreceived,
+        sp.product_returned,
+        sp.sent_at
     FROM
         products p
     INNER JOIN
-        store_products s
-    USING(product_id)
+        store_products sp
+    ON
+        p.product_id = sp.product_id
+    INNER JOIN
+        stores s
+    ON 
+        sp.store_id = s.store_id
 `
 
 const products = () => fetchAll(PRODUCTS)
@@ -54,7 +66,7 @@ const dailyStore = (
         productReturned
     )
 
-const getDailySaleWarehose = (storeId) => fetchAll(GET_DAILY_SALE_WARE_HOUSE, storeId)
+const getDailySaleWarehose = () => fetchAll(GET_DAILY_SALE_WARE_HOUSE)
 
 module.exports = {
     products,
