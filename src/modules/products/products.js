@@ -72,8 +72,6 @@ module.exports = {
             const { storeId } = verifyUser(auth_token)
             const { received, notReceived, returning } = req.body
 
-            console.log(received, notReceived, returning)
-
             if((received.length || notReceived.length || returning.length) && storeId) {
                 const result1 = received.map(async e => await model.dailyStore(storeId, e.product_id, e.product_count))
                 const result2 = notReceived.map(async e => await model.dailyStore(storeId, e.product_id, null, e.product_count))
@@ -120,7 +118,6 @@ module.exports = {
             } else {
                 res.status(400).json({
                     status: 400,
-                    data: [],
                     message: "No products yet"
                 })
             }

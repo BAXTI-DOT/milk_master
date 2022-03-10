@@ -35,8 +35,6 @@ const GET_DAILY_SALE_WARE_HOUSE = `
     INNER JOIN
         store_products s
     USING(product_id)
-    WHERE 
-        s.store_id = $1
 `
 
 const products = () => fetchAll(PRODUCTS)
