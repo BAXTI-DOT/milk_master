@@ -160,7 +160,7 @@ module.exports = {
             if(storeMoney) {
                 res.status(200).json({
                     status: 200,
-                    data: storeMoney.filter(e => e.money_updated_at = moment(e.money_updated_at).calendar())
+                    data: storeMoney.filter(e => e.money_sent_at = moment(e.money_sent_at).calendar())
                 })
             } else {
                 res.status(400).json({

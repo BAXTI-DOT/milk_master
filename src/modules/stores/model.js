@@ -81,7 +81,7 @@ const GET_ACCOUNTANT_MONEY = `
             CASE WHEN store_money_humo IS NULL THEN 0 ELSE store_money_humo END store_money_humo,
             CASE WHEN store_money_uzcard IS NULL THEN 0 ELSE store_money_uzcard END store_money_uzcard,
         store_id,
-        money_updated_at
+        money_sent_at
     FROM
         store_money
     WHERE
