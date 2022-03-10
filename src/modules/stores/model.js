@@ -86,8 +86,6 @@ const GET_ACCOUNTANT_MONEY = `
         store_money
     WHERE
         store_money_status = 2
-    AND 
-        store_id = $1
     GROUP BY 
         store_money_id
 `
@@ -185,7 +183,7 @@ const sendToAccountantFromCasher = async(storeMoneyId, storeCash) => {          
         storeCash ? storeCash: oldCash.store_money_cash
     )
 }
-const getAccountantMoney = (storeId) => fetchAll(GET_ACCOUNTANT_MONEY, storeId)
+const getAccountantMoney = () => fetchAll(GET_ACCOUNTANT_MONEY)
 const monthlyReport = (productId, productCount, storeId) => fetch(MONTHLY_REPORT, productId, productCount, storeId)
 const monthlyReportAccountant = (storeId) => fetchAll(MONTHLY_REPORT_ACCOUNTANT, storeId)
 

@@ -153,10 +153,9 @@ module.exports = {
             })
         }
     },
-    GET_ACCOUNTANT_MONEY: async(req, res) => {
+    GET_ACCOUNTANT_MONEY: async(_, res) => {
         try {
-            const { storeId } = req.query
-            const storeMoney = await model.getAccountantMoney(storeId)
+            const storeMoney = await model.getAccountantMoney()
 
             if(storeMoney) {
                 res.status(200).json({
