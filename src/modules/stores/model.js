@@ -1,5 +1,17 @@
 const { fetch, fetchAll } = require('../../lib/postgres')
 
+const STORE_PRODUCTS = `
+    SELECT
+        product_received,
+        product_unreceived,
+        product_returned,
+        EXTRACT (DAY FROM sent_at) AS day,
+        EXTRACT (Month FROM sent_at) AS month,
+        EXTRACT (Year FROM sent_at) AS year
+    FROM
+        store_products
+`
+
 const STORES = `
     SELECT
         *
@@ -81,7 +93,9 @@ const GET_ACCOUNTANT_MONEY = `
             CASE WHEN store_money_humo IS NULL THEN 0 ELSE store_money_humo END store_money_humo,
             CASE WHEN store_money_uzcard IS NULL THEN 0 ELSE store_money_uzcard END store_money_uzcard,
         store_id,
-        money_sent_at
+        EXTRACT (DAY FROM money_sent_at) AS day,
+        EXTRACT (Month FROM money_sent_at) AS month,
+        EXTRACT (Year FROM money_sent_at) AS year
     FROM
         store_money
     WHERE
@@ -198,7 +212,7 @@ const newStoreMoney = (
 )
 const getCasherMoney = () => fetchAll(GET_CASHER_MONEY)
 const getCasherMoneyToUpdate = (storeMoneyId) => fetch(GET_OLD_STORE_MONEY, storeMoneyId)
-const sendToAccountantFromCasher = async(storeMoneyId, storeCash) => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+const sendToAccountantFromCasher = async(storeMoneyId, storeCash) => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
     const oldCash = await getCasherMoneyToUpdate(storeMoneyId)
 
     return fetch(
@@ -211,6 +225,7 @@ const getAccountantMoney = () => fetchAll(GET_ACCOUNTANT_MONEY)
 const monthlyReport = (productId, productCount, storeId) => fetch(MONTHLY_REPORT, productId, productCount, storeId)
 const monthlyReportAccountant = (storeId) => fetchAll(MONTHLY_REPORT_ACCOUNTANT, storeId)
 const getWarehouseStores = () => fetchAll(GET_WARE_HOUSE_STORES)
+const storeProducts = () => fetchAll(STORE_PRODUCTS)
 
 module.exports = {
     stores,
@@ -223,5 +238,6 @@ module.exports = {
     sendToAccountantFromCasher,
     monthlyReport,
     monthlyReportAccountant,
-    getWarehouseStores
+    getWarehouseStores,
+    storeProducts
 }

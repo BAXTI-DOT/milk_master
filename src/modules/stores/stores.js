@@ -156,6 +156,13 @@ module.exports = {
     GET_ACCOUNTANT_MONEY: async(_, res) => {
         try {
             const storeMoney = await model.getAccountantMoney()
+            const storeProducts = await model.storeProducts()
+
+            console.log(storeMoney, storeProducts)
+
+            for(let i of storeMoney) {
+                console.log(storeProducts.find(e => e.day == i.day && e.month == i.month && e.year == i.year))
+            }
 
             if(storeMoney) {
                 res.status(200).json({
